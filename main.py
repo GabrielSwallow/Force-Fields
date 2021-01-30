@@ -33,7 +33,7 @@ plt.rcParams.update(params)
 
 axis = 5
 arrows = 50
-times = np.linspace(0,60,500)
+times = np.linspace(0,60,1000)
 
 
 def force(r):
@@ -47,7 +47,7 @@ def force(r):
 
     
 
-ball = objects.ball(1, 1, [2,0], [0,1.1])
+ball = objects.ball(1, 1, [2,0], [0,-0.5])
 ball.propagate_system(force, times)
 
 
@@ -64,8 +64,8 @@ v = -y/(x**2 + y**2)
 
 #plt.quiver(x,y,u,v, units='width')
 
-
-OG = True
+#only one can be True
+OG = False
 if OG:
     plt.plot(ball.positions[0][:,0], ball.positions[0][:,1], linewidth=5)
     q = plt.quiver(x,y,u,v, units='width')
@@ -73,21 +73,25 @@ if OG:
     plt.show()
 
 
-animation = False
+animation = True
 if animation:
-
-    for t in range(len(times)):
+    for t in range(int(len(times)/5)):
         rx, ry = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
         #vx, vy = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
-        axs.plot(rx, ry, 'o', color='r', mew=10)
+        plt.plot(0,0, 'o', ms=30, mew=15, color='b')
+        plt.plot(ball.positions[0][(t-4)*5:t*5,0], 
+                 ball.positions[0][(t-4)*5:t*5,1], linewidth=5, color='r')
+        #axs.plot(rx, ry, 'o', color='r', mew=10)
         axs.grid(True)
         axs.set_xlim(-5,5)
         axs.set_ylim(-5,5)
     
-        
+        #print(t)
         camera.snap()
     
     anim = camera.animate()
     pillow = PillowWriter(fps=25)
     filename = directory + "\\Animation.gif" 
     anim.save(filename, writer=pillow)
+    
+    
