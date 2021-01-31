@@ -35,19 +35,24 @@ axis = 5
 arrows = 50
 times = np.linspace(0,60,1000)
 
+p1 = -3
+p2 = 3
 
 def force(r):
     x,y = r[0], r[1]
     
-    u = -x * 1/(x**2 + y**2)
-    v = -y/(x**2 + y**2)
+    u = -(x-p1) * 1/((x-p1)**2 + y**2)
+    v = -y/((x-p1)**2 + y**2)
+    
+    u+= -(x-p2)*1/((x-p2)**2 + y**2)
+    v+= -y*1/((x-p2)**2 + y**2)
     
     return [u,v]
     
 
     
 
-ball = objects.ball(1, 1, [2,0], [0,-0.5])
+ball = objects.ball(1, 1, [-3,1], [1.5,0])
 ball.propagate_system(force, times)
 
 
@@ -78,12 +83,13 @@ if animation:
     for t in range(int(len(times)/5)):
         rx, ry = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
         #vx, vy = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
-        plt.plot(0,0, 'o', ms=30, mew=15, color='b')
+        plt.plot(p1,0, 'o', ms=30, mew=15, color='b')
+        plt.plot(p2,0, 'o', ms=30, mew=15, color='b')
         plt.plot(ball.positions[0][(t-4)*5:t*5,0], 
                  ball.positions[0][(t-4)*5:t*5,1], linewidth=5, color='r')
         #axs.plot(rx, ry, 'o', color='r', mew=10)
         axs.grid(True)
-        axs.set_xlim(-5,5)
+        axs.set_xlim(-10,10)
         axs.set_ylim(-5,5)
     
         #print(t)
