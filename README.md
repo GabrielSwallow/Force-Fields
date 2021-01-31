@@ -1,1 +1,1 @@
-![Animation](./static/Animation.gif)
+![two planets](./Animation.gif)
