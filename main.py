@@ -18,9 +18,6 @@ reload(objects)
 
 directory = os.path.dirname(os.path.realpath(objects.__file__))
 
-fig, axs = plt.subplots(1,1)
-camera = Camera(fig)
-
 params = {
     "axes.labelsize":16,
     "font.size":20,
@@ -31,9 +28,12 @@ params = {
 }
 plt.rcParams.update(params)
 
+fig, axs = plt.subplots(1,1)
+camera = Camera(fig)
+
 axis = 5
 arrows = 50
-times = np.linspace(0,60,1000)
+times = np.linspace(0,60,3000)
 
 p1 = -3
 p2 = 3
@@ -79,14 +79,30 @@ if OG:
 
 
 animation = True
+tail_factor = 8
+tail = tail_factor*5
 if animation:
+    alphas = np.linspace(0.1, 1, tail)
+    alphas = np.array([i**2 for i in np.linspace(0.1, 1, tail)])
+    rgba_colors = np.zeros((tail,4))
+    # for red the first column needs to be one
+    rgba_colors[:,0] = 1.0
+    # the fourth column needs to be your alphas
+    rgba_colors[:, 3] = alphas
+
     for t in range(int(len(times)/5)):
         rx, ry = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
         #vx, vy = ball.velocities[0][:,0][t], ball.positions[0][:,1][t]
         plt.plot(p1,0, 'o', ms=30, mew=15, color='b')
         plt.plot(p2,0, 'o', ms=30, mew=15, color='b')
-        plt.plot(ball.positions[0][(t-4)*5:t*5,0], 
-                 ball.positions[0][(t-4)*5:t*5,1], linewidth=5, color='r')
+        plt.scatter(ball.positions[0][(t-tail_factor)*5:(t)*5,0], 
+                 ball.positions[0][(t-tail_factor)*5:t*5,1], 
+                 color=rgba_colors[0:len(ball.positions[0][(t-tail_factor)*5:(t)*5,0])])
+        #plt.plot(ball.positions[0][(t-4)*5:t*5,0], 
+                # ball.positions[0][(t-4)*5:t*5,1], 
+                # linewidth=5, color='r')
+        plt.plot(ball.positions[0][t*5,0],ball.positions[0][t*5,1],
+                 'o', ms=10, mew=3, color='r')
         #axs.plot(rx, ry, 'o', color='r', mew=10)
         axs.grid(True)
         axs.set_xlim(-10,10)
@@ -96,7 +112,7 @@ if animation:
         camera.snap()
     
     anim = camera.animate()
-    pillow = PillowWriter(fps=25)
+    pillow = PillowWriter(fps=45)
     filename = directory + "\\Animation.gif" 
     anim.save(filename, writer=pillow)
     
