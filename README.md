@@ -4,3 +4,7 @@ Currently, the moving object is defined via a class, while the force field is de
 ## Current progress with animation:
 
 <img src="./Animation.gif" width=700>
+
+
+## Additional Animations:
+<img src="./Animation2.gif" width=700>
