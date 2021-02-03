@@ -52,7 +52,7 @@ def force(r):
 
     
 
-ball = objects.ball(1, 1, [-3,1], [1.5,0])
+ball = objects.ball(1, 1, [0,0], [0.7,1])
 ball.propagate_system(force, times)
 
 
@@ -60,8 +60,11 @@ ball.propagate_system(force, times)
 x,y = np.meshgrid(np.linspace(-axis,axis,arrows),
                   np.linspace(-axis,axis,arrows))
 
-u = -x/(x**2 + y**2)
-v = -y/(x**2 + y**2)
+u = -(x-p1) * 1/((x-p1)**2 + y**2)
+v = -y/((x-p1)**2 + y**2)
+    
+u+= -(x-p2)*1/((x-p2)**2 + y**2)
+v+= -y*1/((x-p2)**2 + y**2)
 
 #q = plt.quiver(x,y,u,v, units='width')
 #plt.quiverkey(q, X=0.3, Y=0.3, U=10, label='Quiver key, length = 10', labelpos='E')
@@ -81,13 +84,15 @@ if OG:
 animation = True
 tail_factor = 8
 tail = tail_factor*5
+axes_lim = 6
+
 if animation:
     alphas = np.linspace(0.1, 1, tail)
     alphas = np.array([i**2 for i in np.linspace(0.1, 1, tail)])
     rgba_colors = np.zeros((tail,4))
     # for red the first column needs to be one
     rgba_colors[:,0] = 1.0
-    # the fourth column needs to be your alphas
+    # the fourth column needs to be the alphas
     rgba_colors[:, 3] = alphas
 
     for t in range(int(len(times)/5)):
@@ -103,10 +108,11 @@ if animation:
                 # linewidth=5, color='r')
         plt.plot(ball.positions[0][t*5,0],ball.positions[0][t*5,1],
                  'o', ms=10, mew=3, color='r')
+        axs.set_title('Two planets, one orbiting object')
         #axs.plot(rx, ry, 'o', color='r', mew=10)
         axs.grid(True)
-        axs.set_xlim(-10,10)
-        axs.set_ylim(-5,5)
+        axs.set_xlim(-axes_lim,axes_lim)
+        axs.set_ylim(-axes_lim,axes_lim)
     
         #print(t)
         camera.snap()
